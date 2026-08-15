@@ -23,11 +23,12 @@ fn bootstrap_systems(engine: &mut Engine) {
     engine.entities.add_system_group(GAMEPLAY_LOGIC, SystemGroup::new(&world, system_group::SystemGroupThreading::Main));
     
     let group = engine.entities.get_system_group_mut(GAMEPLAY_LOGIC).unwrap();
-    group.register_system(Box::new(systems::TestSpawner {}), 0);
+    group.register_system(Box::new(systems::TestSpawner::new()), 0);
 }
 fn build_asset_store() -> AssetStore {
     let mut a: AssetStore = AssetStore::new();
     include_asset!(&mut a, "test_texture.png");
+    include_asset!(&mut a, "ship_parts.png");
     //include_asset!(&mut a, "test")
     a
 }
