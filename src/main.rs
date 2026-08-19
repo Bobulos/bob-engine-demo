@@ -30,6 +30,7 @@ fn build_asset_store() -> AssetStore {
     include_asset!(&mut a, "test_texture.png");
     include_asset!(&mut a, "ship_parts.png");
     include_asset!(&mut a, "crappy_fire.png");
+    include_asset!(&mut a, "drone.png");
     //include_asset!(&mut a, "test")
     a
 }

@@ -16,6 +16,7 @@ pub struct TestSpawner {
     input: Arc<RwLock<Input>>,
     binder_ship: SpriteSheetBinder,
     binder_fire: SpriteSheetBinder,
+    binder_drone: SpriteSheetBinder,
     accumulator: usize,
 }
 impl TestSpawner {
@@ -24,6 +25,7 @@ impl TestSpawner {
             input,
             binder_ship: SpriteSheetBinder::new(6, 1, Some(SpriteAnimation::new(vec![[0.0, 0.0], [1.0, 0.0], [2.0, 0.0], [3.0, 0.0], [4.0, 0.0], [5.0, 0.0]]))),
             binder_fire: SpriteSheetBinder::new(2, 1, Some(SpriteAnimation::new(vec![[0.0, 0.0], [1.0, 0.0]]))),
+            binder_drone: SpriteSheetBinder::new(1, 1, Some(SpriteAnimation::new(vec![[0.0, 0.0]]))),
             accumulator: 0,
         }
     }
@@ -115,6 +117,21 @@ impl SystemBase for TestSpawner {
             world.add_component_safe(entity, self.binder_ship.new_sprite_at_frame([3.0, 0.0]));
             world.add_component_safe(entity, SpriteFrame::new());
             world.add_component_safe(entity, BatchHandle::new(AssetHandle::new(1, None), PipelineKey::Sprite));
+            let mut rb = RigidBody::new(Shape::Rect { half_w: 0.5, half_h: 0.5 }, 1.0, pos, 0.0);
+            if input.get_key_down(KeyCode::ShiftLeft) {
+                rb.apply_force((Float2::ZERO - pos) * 30.0);
+            }
+            world.add_component_safe(entity, rb);
+        }
+        if input.get_key_pressed(KeyCode::KeyA) {
+            //println!("bingle");
+            let pos = input.mouse_world_position;
+            let entity = world.create_entity();
+            world.add_component_safe(entity, Transform::new(pos, 0.0));
+            world.add_component_safe(entity, ShipPart {});
+            world.add_component_safe(entity, self.binder_drone.new_sprite_at_frame([0.0, 0.0]));
+            world.add_component_safe(entity, SpriteFrame::new());
+            world.add_component_safe(entity, BatchHandle::new(AssetHandle::new(3, None), PipelineKey::Sprite));
             let mut rb = RigidBody::new(Shape::Rect { half_w: 0.5, half_h: 0.5 }, 1.0, pos, 0.0);
             if input.get_key_down(KeyCode::ShiftLeft) {
                 rb.apply_force((Float2::ZERO - pos) * 30.0);
